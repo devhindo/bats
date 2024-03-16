@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/devhindo/bats/api"
+	"github.com/devhindo/bats/internal/app"
 )
 
 func main() {
-	api.RUN()
+	app.RUN()
 }

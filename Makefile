@@ -1,8 +1,8 @@
 build:
-	@go build -o bin/bankgo
+	@go build -o bin/bats
 
 run: build
-	@./bin/bankgo
+	@./bin/bats
 
 test:
 	@go test -v ./...

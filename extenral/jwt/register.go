@@ -20,8 +20,8 @@ type Params struct {
 
 func RegisterUser(u User, key []byte) {
 	
-	k := key 
-	t := jwt.New(jwt.SigningMethodHS256)
-	s := t.SignedString(key)
-
+//	k := key 
+//	t := jwt.New(jwt.SigningMethodHS256)
+//	s := t.SignedString(key)
+//
 }

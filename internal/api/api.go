@@ -12,14 +12,16 @@ type APIServer struct {
 }
 
 func (s *APIServer) RUN() {
+
 	mux := http.NewServeMux()
+
+	// user authentication
+	mux.HandleFunc("POST /user/create", s.handleCreateUser)
 
 	mux.HandleFunc("/", s.handleBase)
 	mux.HandleFunc("GET /api/", s.handleAPIBaseRoute)
-	//	mux.HandleFunc("POST /users/register/", s.handleRegisterUser)
 	mux.HandleFunc("/auth/login", s.handleLogin)
 	mux.HandleFunc("/auth/refresh", s.handleRefreshToken)
-	//mux.HandleFunc("POST /users/login", handleAddUsers)
 	log.Println("Server is running on port 8080")
 	http.ListenAndServe(":8080", mux)
 }
@@ -61,9 +63,4 @@ func (s *APIServer) handleAPIBaseRoute(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(data)
 
 	//w.Write([]byte("API Base Route"))
-}
-
-func (s *APIServer) handleRegisterUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Add users")
-	w.Write([]byte("Add users"))
 }

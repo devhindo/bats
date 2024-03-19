@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/devhindo/bats/pkg/db"
 	"github.com/devhindo/bats/internal/api"
 )
 
@@ -10,5 +11,8 @@ const (
 )
 
 func RUN() {
-	api.INIT()
+
+	db := db.New("mongo")
+	db.Connect()
+	api.INIT(db)
 }

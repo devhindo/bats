@@ -1,6 +1,8 @@
 package api
 
-func INIT() {
+import "github.com/devhindo/bats/pkg/db"
+
+func INIT(db *db.DB) {
 	api := APIServer{
 		listenAddress: ":8080",
 	}

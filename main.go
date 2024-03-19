@@ -1,13 +1,11 @@
 package main
 
 import (
-	//	"github.com/devhindo/bats/internal/app"
-	"fmt"
-
-	"github.com/devhindo/bats/internal/env"
+//	"github.com/devhindo/bats/internal/app"
+	"github.com/devhindo/bats/pkg/db"
 )
 
 func main() {
 	//app.RUN()
-	fmt.Println(env.GetEnv("AHMED"))
+	db.
 }

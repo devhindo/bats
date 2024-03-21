@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/devhindo/bats/pkg/db"
 )
 
 type APIServer struct {
-	listenAddress string
+	ListenAddress string
+	DB 	db.Database
 }
 
 func (s *APIServer) RUN() {

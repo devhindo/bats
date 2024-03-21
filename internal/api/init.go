@@ -2,9 +2,10 @@ package api
 
 import "github.com/devhindo/bats/pkg/db"
 
-func INIT(db *db.DB) {
+func INIT(port string, db db.Database) {
 	api := APIServer{
-		listenAddress: ":8080",
+		ListenAddress: port,
+		DB: db,
 	}
 	api.RUN()
 }

@@ -13,7 +13,7 @@ type Credentials interface {}
 type DB struct {
 	database Database
 }
-
+/*
 func New(name string, credentials Credentials) *DB {
 	var database Database
 	if name == "mongo" {
@@ -29,3 +29,4 @@ func (db *DB) Connect() {
 		connectSupabase()
 	}
 }
+*/

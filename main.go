@@ -1,11 +1,9 @@
 package main
 
 import (
-//	"github.com/devhindo/bats/internal/app"
-	"github.com/devhindo/bats/pkg/db"
+	"github.com/devhindo/bats/internal/app"
 )
 
 func main() {
-	//app.RUN()
-	db.
+	app.RUN()
 }

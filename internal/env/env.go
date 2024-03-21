@@ -1,5 +1,11 @@
 package env
+/*
 
+    usage --
+
+    key := GetEnv("ENV_NAME")
+
+*/
 import (
     "os"
     "log"
@@ -17,7 +23,13 @@ func init() {
 
     envVars = make(map[string]string)
 
-    keys := []string{"AHMED", "HCP_CLIENT_ID", /*... add more keys here ...*/}
+    //TODO: make this more efficient
+    keys := []string{
+        "AHMED", 
+        "HCP_CLIENT_ID",
+        "MONGO_CONNECTION_STRING",
+        
+        /*... add more keys here ...*/}
 
     for _, key := range keys {
         if value, exists := os.LookupEnv(key); exists {

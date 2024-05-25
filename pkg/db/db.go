@@ -4,8 +4,13 @@ import (
 
 )
 
+type DBCredentials interface {
+	supabaseID
+}
+
 type Database interface {
 	Connect() error
+
 }
 
 type Credentials interface {}

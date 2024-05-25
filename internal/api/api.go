@@ -19,12 +19,16 @@ func (s *APIServer) RUN() {
 	mux := http.NewServeMux()
 
 	// user authentication
-	mux.HandleFunc("POST /user/create", s.handleCreateUser)
+	mux.HandleFunc("POST api/user/new", s.handleNewUser)
+	mux.HandleFunc("POST api/user/login", s.handleLoginUser)
 
+	/*
 	mux.HandleFunc("/", s.handleBase)
 	mux.HandleFunc("GET /api/", s.handleAPIBaseRoute)
 	mux.HandleFunc("/auth/login", s.handleLogin)
 	mux.HandleFunc("/auth/refresh", s.handleRefreshToken)
+
+	*/
 	log.Println("Server is running on port 8080")
 	http.ListenAndServe(":8080", mux)
 }

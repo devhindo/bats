@@ -28,7 +28,7 @@ func init() {
         "AHMED", 
         "HCP_CLIENT_ID",
         "MONGO_CONNECTION_STRING",
-        
+        "JWT_SECRET_KEY", 
         /*... add more keys here ...*/}
 
     for _, key := range keys {

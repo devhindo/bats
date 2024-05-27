@@ -1,0 +1,1 @@
+-- if not exist create table: posts

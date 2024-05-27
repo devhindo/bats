@@ -6,3 +6,11 @@ run: build
 
 test:
 	@go test -v ./...
+
+up:
+	@docker-compose up -d
+
+adbs: # access db shell
+
+sdbl: # show db logs
+	@docker-compose logs -f db

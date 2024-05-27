@@ -1,0 +1,8 @@
+# Use the official image as a parent image
+FROM mysql:latest
+# Set the working directory in the container
+WORKDIR /docker-entrypoint-initdb.d
+# Copy the database initialization script to the working directory
+COPY init.sql .
+# Set the MYSQL_ROOT_PASSWORD environment variable
+ENV MYSQL_ROOT_PASSWORD root_password

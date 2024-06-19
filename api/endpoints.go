@@ -21,7 +21,7 @@ func (s *APIServer) RUN() {
 	// user authentication
 	mux.HandleFunc("POST api/user/new", s.handleNewUser)
 	mux.HandleFunc("POST api/user/login", s.handleLoginUser)
-
+	mux.HandleFunc("POST api/user/register", s.handleRegisterUser)
 	/*
 	mux.HandleFunc("/", s.handleBase)
 	mux.HandleFunc("GET /api/", s.handleAPIBaseRoute)

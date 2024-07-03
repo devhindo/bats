@@ -23,7 +23,7 @@ func (s *APIServer) RUN() {
 	mux := http.NewServeMux()
 
 	// user authentication
-	mux.HandleFunc("/register", s.handleRegisterUser)
+	mux.HandleFunc("POST /register", s.handleRegisterUser)
 	mux.HandleFunc("/login", s.handleLoginUser)
 	mux.HandleFunc("api/user/register", s.handleRegisterUser)
 	/*

@@ -2,10 +2,11 @@ package api
 
 import (
 	"crypto/rand"
+	"errors"
+	"fmt"
 	"math/big"
 	"net/smtp"
 	"os"
-	"errors"
 )
 
 
@@ -14,14 +15,15 @@ func SendMail(to string, content string) error {
 	
 	err := smtp.SendMail("smtp.gmail.com:587", mailAuth, os.Getenv("MAIL_USERNAME"), []string{to}, []byte(content))
 	if err != nil {
-		return err
+		fmt.Println("couldn't send email. err: ", err)
 	}
 	
 	return nil
 }
 
-func constructConfirmationMail(code string) string {
+func constructConfirmationCodeMail(code string) string {
 	confirmationMail := ""
+	confirmationMail += "your confirmation code is: " + code
 	return confirmationMail
 }
 

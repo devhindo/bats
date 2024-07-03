@@ -53,7 +53,9 @@ func (s *APIServer) handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 	log.Printf("The user request value %v", u)
 
 	confirmationCode := generateConfirmationCode()
-	confirmationMail := constructConfirmationMail(confirmationCode)
+	confirmationMail := constructConfirmationCodeMail(confirmationCode)
+
+	log.Println(confirmationMail)
 
 
 	err := SendMail(u.Email, confirmationMail)

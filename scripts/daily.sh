@@ -1,0 +1,1 @@
+#!/bin/shf git push

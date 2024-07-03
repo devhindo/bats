@@ -4,13 +4,22 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func RUN() {
-
+func init() {
+	
 	err := godotenv.Load(".env")
 	if err != nil {
 		panic(err)
 	}
+
+
+	mailAuth = initMailService()
+
+}
+
+func RUN() {
+
 	
+
 	/*
 
 	internalDB := db.NewMySQL()

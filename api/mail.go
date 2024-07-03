@@ -3,12 +3,19 @@ package api
 import (
 	"crypto/rand"
 	"math/big"
-
+	"net/smtp"
+	"os"
+	"errors"
 )
+
+
 
 func SendMail(to string, content string) error {
 	
-	// send mail
+	err := smtp.SendMail("smtp.gmail.com:587", mailAuth, os.Getenv("MAIL_USERNAME"), []string{to}, []byte(content))
+	if err != nil {
+		return err
+	}
 	
 	return nil
 }
@@ -32,3 +39,33 @@ func generateConfirmationCode() string {
 
 	return a
 }
+
+func initMailService() smtp.Auth {
+	return LoginAuth(os.Getenv("MAIL_USERNAME"), os.Getenv("MAIL_PASSWORD"))
+}
+
+type loginAuth struct {
+	username, password string
+  }
+  
+  func LoginAuth(username, password string) smtp.Auth {
+	  return &loginAuth{username, password}
+  }
+  
+  func (a *loginAuth) Start(server *smtp.ServerInfo) (string, []byte, error) {
+	  return "LOGIN", []byte(a.username), nil
+  }
+  
+  func (a *loginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
+	  if more {
+		  switch string(fromServer) {
+		  case "Username:":
+			  return []byte(a.username), nil
+		  case "Password:":
+			  return []byte(a.password), nil
+		  default:
+			  return nil, errors.New("Unkown fromServer")
+		  }
+	  }
+	  return nil, nil
+  }

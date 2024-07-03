@@ -1,8 +1,9 @@
 package api
 
 type User struct {
-	Username string
-	Email string
+	Username string `json:"username"`
+	Email string `json:"email"`
+	Password string `json:"password"` 
 }
 
 type Post struct {
@@ -13,3 +14,4 @@ type Post struct {
 
 
 
+// `json:"state"`

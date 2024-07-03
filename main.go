@@ -1,17 +1,11 @@
 package main
 
 import (
-	"log"
-
-	"github.com/devhindo/bats/internal/app"
-	"github.com/joho/godotenv"
+	"github.com/devhindo/bats/api"
 )
 
+
+
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	
-	app.RUN()
+	api.RUN() // starting the backend server
 }

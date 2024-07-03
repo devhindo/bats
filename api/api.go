@@ -14,14 +14,18 @@ type APIServer struct {
 	DB 	db.Database
 }
 
+func (s* APIServer) New() {
+	
+}
+
 func (s *APIServer) RUN() {
 
 	mux := http.NewServeMux()
 
 	// user authentication
-	mux.HandleFunc("POST api/user/new", s.handleNewUser)
-	mux.HandleFunc("POST api/user/login", s.handleLoginUser)
-	mux.HandleFunc("POST api/user/register", s.handleRegisterUser)
+	mux.HandleFunc("/register", s.handleRegisterUser)
+	mux.HandleFunc("/login", s.handleLoginUser)
+	mux.HandleFunc("api/user/register", s.handleRegisterUser)
 	/*
 	mux.HandleFunc("/", s.handleBase)
 	mux.HandleFunc("GET /api/", s.handleAPIBaseRoute)

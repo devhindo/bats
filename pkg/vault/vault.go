@@ -1,30 +1,31 @@
 package vault
+/*
 
 import (
 	"bytes"
 	"net/http"
 	"net/url"
-
-	"github.com/joho/godotenv"
-)
-
-
-
-func GetEnvVariable(name s) {
-	env := ""
-	return env
-}
-
-
-/*
-HCP_API_TOKEN=$(curl --location "https://auth.idp.hashicorp.com/oauth2/token" \
---header "Content-Type: application/x-www-form-urlencoded" \
---data-urlencode "client_id=$HCP_CLIENT_ID" \
---data-urlencode "client_secret=$HCP_CLIENT_SECRET" \
---data-urlencode "grant_type=client_credentials" \
---data-urlencode "audience=https://api.hashicorp.cloud" | jq -r .access_token)
-*/
-
+	
+	)
+	
+	
+	func GetEnvVariable(name s) {
+		env := ""
+		return env
+	}
+	*/
+		
+		
+		/*
+		HCP_API_TOKEN=$(curl --location "https://auth.idp.hashicorp.com/oauth2/token" \
+		--header "Content-Type: application/x-www-form-urlencoded" \
+		--data-urlencode "client_id=$HCP_CLIENT_ID" \
+		--data-urlencode "client_secret=$HCP_CLIENT_SECRET" \
+		--data-urlencode "grant_type=client_credentials" \
+		--data-urlencode "audience=https://api.hashicorp.cloud" | jq -r .access_token)
+		*/
+		
+		/*
 func generate_HCP_API_TOKEN(HCP_CLIENT_ID string, HCP_CLIENT_SECRET string) (string, error) {
 	data := url.Values{}
 	data.Set("client_id", "HCP_CLIENT_ID")

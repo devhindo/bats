@@ -5,7 +5,7 @@ import (
 )
 
 type DBCredentials interface {
-	supabaseID
+
 }
 
 type Database interface {

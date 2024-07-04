@@ -12,8 +12,13 @@ import (
 
 
 func SendMail(to string, content string) error {
+
+	fmt.Println(os.Getenv("MAIL_USERNAME"), os.Getenv("MAIL_PASSWORD"), os.Getenv("MAIL_HOST"), os.Getenv("MAIL_SMTP_PORT"))
 	
-	err := smtp.SendMail("smtp.gmail.com:587", mailAuth, os.Getenv("MAIL_USERNAME"), []string{to}, []byte(content))
+	fmt.Println(content)
+	
+	err := smtp.SendMail(os.Getenv("MAIL_HOST") + ":25", mailAuth, os.Getenv("MAIL_USERNAME"), []string{to}, []byte(content))
+	fmt.Println("stuck yet?")
 	if err != nil {
 		fmt.Println("couldn't send email. err: ", err)
 	}

@@ -10,26 +10,64 @@ import (
 )
 
 
+type loginAuth struct {
+  username, password string
+}
 
-func SendMail(to string, content string) error {
+func LoginAuth(username, password string) smtp.Auth {
+	return &loginAuth{username, password}
+}
 
-	fmt.Println(os.Getenv("MAIL_USERNAME"), os.Getenv("MAIL_PASSWORD"), os.Getenv("MAIL_HOST"), os.Getenv("MAIL_SMTP_PORT"))
-	
-	fmt.Println(content)
-	
-	err := smtp.SendMail(os.Getenv("MAIL_HOST") + ":25", mailAuth, os.Getenv("MAIL_USERNAME"), []string{to}, []byte(content))
-	fmt.Println("stuck yet?")
-	if err != nil {
-		fmt.Println("couldn't send email. err: ", err)
+func (a *loginAuth) Start(server *smtp.ServerInfo) (string, []byte, error) {
+	return "LOGIN", []byte(a.username), nil
+}
+
+func (a *loginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
+	if more {
+		switch string(fromServer) {
+		case "Username:":
+			return []byte(a.username), nil
+		case "Password:":
+			return []byte(a.password), nil
+		default:
+			return nil, errors.New("Unkown fromServer")
+		}
 	}
-	
+	return nil, nil
+}
+
+
+// usage: 
+// auth := LoginAuth("loginname", "password")
+// err := smtp.SendMail(smtpServer + ":25", auth, fromAddress, toAddresses, []byte(message))
+// or	
+// client, err := smtp.Dial(smtpServer)
+// client.Auth(LoginAuth("loginname", "password"))
+
+
+func SendMail(to string, message []byte) error {
+
+	fmt.Println(os.Getenv("MAIL_HOST") +":"+ os.Getenv("MAIL_PORT"))
+
+	auth := LoginAuth(os.Getenv("MAIL_USER"), os.Getenv("MAIL_PASS"))
+	err := smtp.SendMail(os.Getenv("MAIL_HOST") + ":" + os.Getenv("MAIL_PORT"), auth, os.Getenv("MAIL_USER"), []string{to}, message)
+	if err != nil {
+		fmt.Println("Error sending mail: ", err)
+		return err
+	}
+
+	fmt.Println("Mail sent successfully")
 	return nil
 }
 
-func constructConfirmationCodeMail(code string) string {
-	confirmationMail := ""
-	confirmationMail += "your confirmation code is: " + code
-	return confirmationMail
+func constructConfirmationCodeMail(code string) []byte {
+
+	subject := "Subject: Your Subject Here\n"
+    body := "your confirmation code is: " + code
+    message := []byte(subject + "\n" + body)
+
+
+	return message
 }
 
 func generateConfirmationCode() string {
@@ -47,32 +85,3 @@ func generateConfirmationCode() string {
 	return a
 }
 
-func initMailService() smtp.Auth {
-	return LoginAuth(os.Getenv("MAIL_USERNAME"), os.Getenv("MAIL_PASSWORD"))
-}
-
-type loginAuth struct {
-	username, password string
-  }
-  
-  func LoginAuth(username, password string) smtp.Auth {
-	  return &loginAuth{username, password}
-  }
-  
-  func (a *loginAuth) Start(server *smtp.ServerInfo) (string, []byte, error) {
-	  return "LOGIN", []byte(a.username), nil
-  }
-  
-  func (a *loginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
-	  if more {
-		  switch string(fromServer) {
-		  case "Username:":
-			  return []byte(a.username), nil
-		  case "Password:":
-			  return []byte(a.password), nil
-		  default:
-			  return nil, errors.New("Unkown fromServer")
-		  }
-	  }
-	  return nil, nil
-  }

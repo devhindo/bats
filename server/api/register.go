@@ -53,12 +53,11 @@ func (s *APIServer) handleRegisterUser(w http.ResponseWriter, r *http.Request) {
 	log.Printf("The user request value %v", u)
 
 	confirmationCode := generateConfirmationCode()
-	confirmationMail := constructConfirmationCodeMail(confirmationCode)
-
-	log.Println(confirmationMail)
+	confirmationMail := "your confirmation code is " + confirmationCode + "\n" + ".Expires in 5 minutes."
 
 
-	err := SendMail(u.Email, confirmationMail)
+
+	err := SendMail(u.Email, "Bats App: Confirmation Code", confirmationMail)
 	if err != nil {
 		fmt.Println("couldn't send mail", err)
 	}

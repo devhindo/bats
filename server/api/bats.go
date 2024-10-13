@@ -11,7 +11,10 @@ func init() {
 		panic(err)
 	}
 
-
+	err = connectLocalDB()
+	if err != nil {
+		panic(err)
+	}
 
 }
 

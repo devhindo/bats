@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
+	"log"
 	"math/big"
 	"net/smtp"
 	"os"
@@ -30,7 +31,7 @@ func (a *loginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
 		case "Password:":
 			return []byte(a.password), nil
 		default:
-			return nil, errors.New("Unkown fromServer")
+			return nil, errors.New("unkown fromServer")
 		}
 	}
 	return nil, nil
@@ -45,9 +46,13 @@ func (a *loginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
 // client.Auth(LoginAuth("loginname", "password"))
 
 
-func SendMail(to string, message []byte) error {
+func SendMail(to string, subject string, body string) error {
 
-	fmt.Println(os.Getenv("MAIL_HOST") +":"+ os.Getenv("MAIL_PORT"))
+	subject = "Subject: " + subject + "\n"
+
+	message := []byte(subject + "\n" + body)
+
+	log.Println(string(message), "a7oooo")
 
 	auth := LoginAuth(os.Getenv("MAIL_USER"), os.Getenv("MAIL_PASS"))
 	err := smtp.SendMail(os.Getenv("MAIL_HOST") + ":" + os.Getenv("MAIL_PORT"), auth, os.Getenv("MAIL_USER"), []string{to}, message)
@@ -56,18 +61,9 @@ func SendMail(to string, message []byte) error {
 		return err
 	}
 
-	fmt.Println("Mail sent successfully")
+	log.Println("Mail sent successfully")
+
 	return nil
-}
-
-func constructConfirmationCodeMail(code string) []byte {
-
-	subject := "Subject: Your Subject Here\n"
-    body := "your confirmation code is: " + code
-    message := []byte(subject + "\n" + body)
-
-
-	return message
 }
 
 func generateConfirmationCode() string {

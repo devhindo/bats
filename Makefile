@@ -14,3 +14,8 @@ adbs: # access db shell
 
 sdbl: # show db logs
 	@docker-compose logs -f db
+
+
+initlocaldb:
+	@chmod +x ./scripts/initLocalDB.sh
+	@./scripts/initLocalDB.sh

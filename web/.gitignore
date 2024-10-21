@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Bun dependencies
+.bun/
+
+# Build directories
+build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun-debug.log*
+
+# Dependency directories
+jspm_packages/
+
+# IDE files
+.vscode/
+.idea/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Miscellaneous
+.DS_Store
+*.pemgit rm -r --cached node_modulesgit rm -r --cached node_modules

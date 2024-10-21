@@ -3,8 +3,6 @@ import axios from 'axios';
 import logo from '../assets/bats.png'; // Adjust the path if necessary
 
 const Signup: React.FC = () => {
-    const tst =  process.env.REACT_APP_TEST;
-    console.log("envvv: " + tst)
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

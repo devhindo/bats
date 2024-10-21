@@ -1,3 +1,8 @@
+.PHONY: ui
+
+ui:
+	@cd web && bun run dev -- --open
+
 build:
 	@go build -o bin/bats
 

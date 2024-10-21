@@ -31,3 +31,7 @@ jspm_packages/
 # Miscellaneous
 .DS_Store
 *.pemgit rm -r --cached node_modulesgit rm -r --cached node_modules
+
+# build
+tsconfig.node.tsbuildinfo
+tsconfig.app.tsbuildinfo

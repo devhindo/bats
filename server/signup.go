@@ -29,7 +29,7 @@ func handleSignUp(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&cred)
 	if err != nil {
 		log.Println("error: /signup: invalid credentails: err: ", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "error in signup credentials. " + "error: " + err.Error(), http.StatusBadRequest)
 		return
 	}
 

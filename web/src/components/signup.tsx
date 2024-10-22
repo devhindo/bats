@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import logo from '../assets/bats.png'; // Adjust the path if necessary
 
+const url = import.meta.env.VITE_BASE_URL;
+
 const Signup: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -12,7 +14,7 @@ const Signup: React.FC = () => {
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            await axios.post('http://localhost:8080/signup', {
+            await axios.post(url + 'signup', {
                 username,
                 email,
                 password,
@@ -26,7 +28,7 @@ const Signup: React.FC = () => {
     const handleVerifyOtp = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/verify-otp', {
+            const response = await axios.post(url + 'verify-otp', {
                 email,
                 otp,
             });

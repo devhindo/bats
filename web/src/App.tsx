@@ -5,10 +5,17 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/signup');
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      navigate('/signup');
+    }
   }, [navigate]);
 
-  return null;
+  return (
+    <div>
+      <h1>App</h1>
+    </div>
+  );
 }
 
 export default App;

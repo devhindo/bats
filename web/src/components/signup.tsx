@@ -28,7 +28,7 @@ const Signup: React.FC = () => {
     const handleVerifyOtp = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            const response = await axios.post(url + 'verify-otp', {
+            const response = await axios.post(url + 'signup/otp', {
                 email,
                 otp,
             });

@@ -27,3 +27,4 @@ bin
 *.env
 docs
 bats
+*test*

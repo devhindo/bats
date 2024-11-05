@@ -1,5 +1,7 @@
 .PHONY: ui
 .PHONY: server
+.PHONY: db
+
 ui:
 	@cd web && bun run dev -- --open
 
@@ -10,3 +12,8 @@ server:
 	fi
 	
 	@cd server && air
+
+db:
+	docker pull mysql:latest
+
+	docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=testdb -p 3306:3306 -d mysql:latest

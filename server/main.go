@@ -13,5 +13,8 @@ func main() {
 		log.Fatalf("Error loading .env file %s", err)
 	}
 	
+	db := &DB{}
+	db.init()
+	
 	runAPI()
 }

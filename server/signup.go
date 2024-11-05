@@ -12,9 +12,17 @@ user endpoints
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
-	// "github.com/golang-jwt/jwt/v5"
+	"os"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+)
+
+var (
+	jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 )
 
 type Credentials struct {
@@ -33,6 +41,40 @@ func handleSignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// check if user already exists
+
+	// create a new user
+	tokenString, err := createJWTToken(&cred)
+	if err != nil {
+		log.Println("error: /signup: error in creating jwt token: err: ", err)
+		http.Error(w, "error in creating jwt token. " + "error: " + err.Error(), http.StatusInternalServerError)
+		return	
+	}
+
+	log.Println("tokenString: ", tokenString)
+
 	log.Println(cred)
-	 log.Println("Handling signup")
+	log.Println("Handling signup")
 }
+
+func createJWTToken(c *Credentials) (string, error) {
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": c.Username,
+		"email": c.Email,
+		"password": c.Password,
+		"iss": "bats",
+		"aud": "bats",
+		"exp": time.Now().Add(time.Hour).Unix(),
+		"iat": time.Now().Unix(),
+	})
+
+	fmt.Printf("claims: %v\n", claims)
+	
+	tokenString, err := claims.SignedString(jwtSecret)
+	if err != nil {
+		log.Println("error: /signup: error in creating jwt token: err: ", err)
+		return "", err
+	}
+
+	return tokenString, nil
+} 

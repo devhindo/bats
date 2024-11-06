@@ -26,11 +26,11 @@ func runAPI() {
 	handler := corsMiddleware(mux)
 
 	port := ":8080"
+	log.Println("Server is running on port" + port)
 	err := http.ListenAndServe(port, handler)
 	if err != nil {
 		log.Fatalf("Error starting server: %s", err)
 	}
-	log.Println("Server is running on port" + port)
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {

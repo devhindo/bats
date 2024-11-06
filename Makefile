@@ -16,4 +16,4 @@ server:
 db:
 	docker pull mysql:latest
 
-	docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=testdb -p 3306:3306 -d mysql:latest
+	docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bats -p 3306:3306 -d mysql:latest

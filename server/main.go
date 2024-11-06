@@ -15,6 +15,7 @@ func main() {
 	
 	db := &DB{}
 	db.init()
+	db.createTables()
 	
 	runAPI()
 }

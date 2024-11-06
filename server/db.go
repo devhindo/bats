@@ -5,6 +5,7 @@ import (
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/qustavo/dotsql"
 )
 
 
@@ -14,7 +15,7 @@ type DB struct {
 
 func (db *DB) init() {
 	
-	dsn := "root:root@tcp(127.0.0.1:3306)/testdb"
+	dsn := "root:root@tcp(127.0.0.1:3306)/bats"
 	conn, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal("error: db: error in opening connection: err: ", err)
@@ -27,4 +28,29 @@ func (db *DB) init() {
 
 	db.conn = conn
 	log.Println("db: connection established")
+}
+
+func (db *DB) createTables() {
+
+	dot, err := dotsql.LoadFromFile("../scripts/db/schema.sql")
+	if err != nil {
+		log.Fatal("error: db: error in loading schema: err: ", err)
+	}
+
+	res, err := dot.Exec(db.conn, "db")
+	if err != nil {
+		log.Println("error: db: error in creating db: err: ", err)
+	}
+	log.Printf("db: db created: %v", res)
+
+	res, err = dot.Exec(db.conn, "use")
+	if err != nil {
+		log.Fatal("error: db: error in using db: err: ", err)
+	}
+	log.Printf("db: using db: %v", res)
+	
+	_, _ = dot.Exec(db.conn, "users")
+	_, _ = dot.Exec(db.conn, "addtestusers")
+
+	log.Println("db: tables created")
 }

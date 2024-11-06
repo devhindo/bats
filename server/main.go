@@ -16,6 +16,8 @@ func main() {
 	db := &DB{}
 	db.init()
 	db.createTables()
-	
-	runAPI()
+	defer db.conn.Close()
+		
+	api := &API{db: db}
+	api.runAPI()
 }

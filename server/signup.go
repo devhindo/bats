@@ -31,7 +31,7 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-func handleSignUp(w http.ResponseWriter, r *http.Request) {
+func (api *API) handleSignUp(w http.ResponseWriter, r *http.Request) {
 
 	var cred Credentials
 	err := json.NewDecoder(r.Body).Decode(&cred)
@@ -42,6 +42,17 @@ func handleSignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if user already exists
+	if exists, err := api.db.userExists(cred.Username); err != nil {
+		log.Println("error: /signup: error in checking user exists: err: ", err)
+		http.Error(w, "error in checking user exists. " + "error: " + err.Error(), http.StatusInternalServerError)
+		return
+	} else if exists {
+		log.Println("error: /signup: user already exists")
+		http.Error(w, "user already exists", http.StatusConflict)
+		return
+	}
+
+	
 
 	// create a new user
 	tokenString, err := createJWTToken(&cred)

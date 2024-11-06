@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -53,4 +54,14 @@ func (db *DB) createTables() {
 	_, _ = dot.Exec(db.conn, "addtestusers")
 
 	log.Println("db: tables created")
+}
+
+func (db *DB)  userExists(username string) (bool, error) {
+	query := "SELECT COUNT(*) FROM users WHERE username = ?"
+	var count int
+	err := db.conn.QueryRow(query, username).Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("error: db: error in querying user: err: %v", err)
+	}	
+	return count > 0, nil
 }

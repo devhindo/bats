@@ -16,4 +16,8 @@ server:
 db:
 	docker pull mysql:latest
 
-	docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bats -p 3306:3306 -d mysql:latest
+	@if [ $$(docker ps -aq -f name=mysql-container) ]; then \
+		docker start mysql-container; \
+	else \
+		docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bats -p 3306:3306 -d mysql:latest; \
+	fi

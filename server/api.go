@@ -8,13 +8,16 @@ import (
 	"net/http"
 )
 
+type API struct {
+	db *DB
+}
 
-func runAPI() {
+func (api *API) runAPI() {
 
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", handleRoot)
-	mux.HandleFunc("POST /signup", handleSignUp)
+	mux.HandleFunc("POST /signup", api.handleSignUp)
 
 	/*
 	mux.HandleFunc("GET /api/", s.handleAPIBaseRoute)

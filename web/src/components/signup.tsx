@@ -10,9 +10,22 @@ const Signup: React.FC = () => {
     const [password, setPassword] = useState('');
     const [otp, setOtp] = useState('');
     const [isOtpSent, setIsOtpSent] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+
+    const validatePassword = (password: string) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return regex.test(password);
+    };
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
+        if (!validatePassword(password)) {
+            setPasswordError('Password must be at least 8 characters long, include an uppercase letter, a number, and a special character.');
+            return;
+        } else {
+            setPasswordError('');
+        }
         try {
             await axios.post(url + 'signup', {
                 username,
@@ -20,8 +33,13 @@ const Signup: React.FC = () => {
                 password,
             });
             setIsOtpSent(true);
+            setErrorMessage('');
         } catch (error) {
-            console.error('There was an error registering!', error);
+            if (axios.isAxiosError(error) && error.response?.status === 409) {
+                setErrorMessage('Username already exists');
+            } else {
+                console.error('There was an error registering!', error);
+            }
         }
     };
 
@@ -49,6 +67,11 @@ const Signup: React.FC = () => {
                 </div>
                 {!isOtpSent ? (
                     <form onSubmit={handleRegister}>
+                        {errorMessage && (
+                            <div className="mb-4 text-red-500">
+                                {errorMessage}
+                            </div>
+                        )}
                         <div className="mb-4">
                             <label className="block text-gray-700 dark:text-gray-300">Username:</label>
                             <input
@@ -75,6 +98,11 @@ const Signup: React.FC = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300"
                             />
+                            {passwordError && (
+                                <div className="mt-2 text-red-500">
+                                    {passwordError}
+                                </div>
+                            )}
                         </div>
                         <button
                             type="submit"

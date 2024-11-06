@@ -12,7 +12,6 @@ user endpoints
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -62,9 +61,12 @@ func (api *API) handleSignUp(w http.ResponseWriter, r *http.Request) {
 		return	
 	}
 
-	log.Println("tokenString: ", tokenString)
+	// send the token back
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"token": tokenString})
 
-	log.Println(cred)
+
 	log.Println("Handling signup")
 }
 
@@ -78,8 +80,6 @@ func createJWTToken(c *Credentials) (string, error) {
 		"exp": time.Now().Add(time.Hour).Unix(),
 		"iat": time.Now().Unix(),
 	})
-
-	fmt.Printf("claims: %v\n", claims)
 	
 	tokenString, err := claims.SignedString(jwtSecret)
 	if err != nil {

@@ -56,10 +56,10 @@ func (db *DB) createTables() {
 	log.Println("db: tables created")
 }
 
-func (db *DB)  userExists(username string) (bool, error) {
-	query := "SELECT COUNT(*) FROM users WHERE username = ?"
+func (db *DB) checkExsistance(table string, column string, value string) (bool, error) {
+	query := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE %s = ?", table, column)
 	var count int
-	err := db.conn.QueryRow(query, username).Scan(&count)
+	err := db.conn.QueryRow(query, value).Scan(&count)
 	if err != nil {
 		return false, fmt.Errorf("error: db: error in querying user: err: %v", err)
 	}	

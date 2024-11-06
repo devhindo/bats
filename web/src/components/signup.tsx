@@ -12,10 +12,35 @@ const Signup: React.FC = () => {
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [passwordValidation, setPasswordValidation] = useState({
+        length: false,
+        uppercase: false,
+        number: false,
+        specialChar: false,
+    });
+    const [isPasswordTouched, setIsPasswordTouched] = useState(false);
 
     const validatePassword = (password: string) => {
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return regex.test(password);
+        const length = password.length >= 8;
+        const uppercase = /[A-Z]/.test(password);
+        const number = /\d/.test(password);
+        const specialChar = /[@$!%*?&]/.test(password);
+
+        setPasswordValidation({
+            length,
+            uppercase,
+            number,
+            specialChar,
+        });
+
+        return length && uppercase && number && specialChar;
+    };
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+        setIsPasswordTouched(true);
+        validatePassword(newPassword);
     };
 
     const handleRegister = async (event: React.FormEvent) => {
@@ -23,8 +48,6 @@ const Signup: React.FC = () => {
         if (!validatePassword(password)) {
             setPasswordError('Password must be at least 8 characters long, include an uppercase letter, a number, and a special character.');
             return;
-        } else {
-            setPasswordError('');
         }
         try {
             await axios.post(url + 'signup', {
@@ -34,6 +57,7 @@ const Signup: React.FC = () => {
             });
             setIsOtpSent(true);
             setErrorMessage('');
+            setPasswordError('');
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 409) {
                 setErrorMessage('Username already exists');
@@ -95,12 +119,28 @@ const Signup: React.FC = () => {
                             <input
                                 type="password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={handlePasswordChange}
                                 className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300"
                             />
                             {passwordError && (
                                 <div className="mt-2 text-red-500">
                                     {passwordError}
+                                </div>
+                            )}
+                            {isPasswordTouched && (
+                                <div className="mt-2">
+                                    <div className={`text-sm ${passwordValidation.length ? 'text-green-500' : 'text-red-500'}`}>
+                                        {passwordValidation.length ? '✔' : '✘'} At least 8 characters
+                                    </div>
+                                    <div className={`text-sm ${passwordValidation.uppercase ? 'text-green-500' : 'text-red-500'}`}>
+                                        {passwordValidation.uppercase ? '✔' : '✘'} At least one uppercase letter
+                                    </div>
+                                    <div className={`text-sm ${passwordValidation.number ? 'text-green-500' : 'text-red-500'}`}>
+                                        {passwordValidation.number ? '✔' : '✘'} At least one number
+                                    </div>
+                                    <div className={`text-sm ${passwordValidation.specialChar ? 'text-green-500' : 'text-red-500'}`}>
+                                        {passwordValidation.specialChar ? '✔' : '✘'} At least one special character (@$!%*?&)
+                                    </div>
                                 </div>
                             )}
                         </div>

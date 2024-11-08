@@ -14,10 +14,10 @@ server:
 	@cd server && air
 
 db:
-	docker pull mysql:latest
+	docker pull mysql:9.1.0
 
 	@if [ $$(docker ps -aq -f name=mysql-container) ]; then \
 		docker start mysql-container; \
 	else \
-		docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bats -p 3306:3306 -d mysql:latest; \
+		docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bats -p 3306:3306 -d mysql:9.1.0; \
 	fi

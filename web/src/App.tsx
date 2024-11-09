@@ -5,9 +5,11 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem('token');
     if (!accessToken) {
       navigate('/signup');
+    } else {
+      navigate('/home');
     }
   }, [navigate]);
 

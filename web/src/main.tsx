@@ -11,6 +11,7 @@ import {
 import Signup from './components/signup.tsx'
 import App from './App.tsx';
 import Home from './components/home.tsx';
+import Signin from './components/signin.tsx';
 
 /*
 const router = createBrowserRouter([
@@ -41,6 +42,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<App />} />  {/*or other routes*/}
         <Route path="/signup" element={<Signup />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/signin" element={<Signin />} />
         </Routes>
       </BrowserRouter>
   </StrictMode>

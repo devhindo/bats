@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MoonIcon, SunIcon, UserIcon, UserPlusIcon, MenuIcon } from 'lucide-react'
 
 
@@ -26,13 +26,13 @@ function App() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-2">
-              <img src="/bats.svg" alt="NightOwl Logo" className="w-8 h-8 sm:w-10 sm:h-10" />
+              <img src="/bats.svg" alt="Bats Logo" className="w-8 h-8 sm:w-10 sm:h-10" />
               <span className="text-xl sm:text-2xl font-bold">Bats</span>
             </div>
             <div className="hidden sm:flex space-x-4">
                 <button
                 className="text-white hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md text-sm font-medium flex items-center"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/signin')}
                 >
                 <UserIcon className="w-4 h-4 mr-2" />
                 Login
@@ -67,7 +67,7 @@ function App() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4">
         <div className="container mx-auto text-center">
-          <img src="/bats.svg" alt="NightOwl Logo" className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-8" />
+          <img src="/bats.svg" alt="Bats Logo" className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-8" />
             <h1 className="text-4xl sm:text-5xl font-bold mb-6">
             Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">Bats</span>
             </h1>
@@ -77,16 +77,16 @@ function App() {
             <div className="text-xl sm:text-2xl font-semibold">6 PM - 6 AM</div>
             <MoonIcon className="w-6 h-6 sm:w-8 sm:h-8 text-blue-200" />
           </div>
-          <button className="bg-white text-purple-900 hover:bg-purple-100 px-6 py-3 rounded-md text-lg font-medium">
+          <Link to="/signup" className="bg-white text-purple-900 hover:bg-purple-100 px-6 py-3 rounded-md text-lg font-medium">
             Join the Night
-          </button>
+          </Link>
         </div>
       </section>
 
       {/* Features Section */}
       <section className="py-20 px-4 bg-purple-800 bg-opacity-50">
         <div className="container mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12">Why NightOwl?</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12">Why Bats?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard
               icon={<MoonIcon className="w-10 h-10 sm:w-12 sm:h-12 mb-4 text-yellow-400" />}
@@ -111,7 +111,7 @@ function App() {
       <section className="py-20 px-4">
         <div className="container mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6">Ready to embrace the night?</h2>
-          <p className="text-lg sm:text-xl mb-8">Join NightOwl and discover a world that comes alive after dark.</p>
+          <p className="text-lg sm:text-xl mb-8">Join Bats and discover a world that comes alive after dark.</p>
           <button className="bg-white text-purple-900 hover:bg-purple-100 px-6 py-3 rounded-md text-lg font-medium">
             Get Started
           </button>

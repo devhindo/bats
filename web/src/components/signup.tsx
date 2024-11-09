@@ -110,57 +110,57 @@ const Signup: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
-            <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-900 to-indigo-900 px-4 sm:px-6 lg:px-8">
+            <div className="bg-purple-800 bg-opacity-50 p-8 rounded-lg shadow-md w-full max-w-md">
                 <div className="flex items-center justify-center mb-6">
                     <img src={logo} alt="Bats Logo" className="h-12 w-12 mr-2" />
-                    <span className="text-2xl font-bold text-gray-700 dark:text-gray-300">Bats</span>
+                    <span className="text-2xl font-bold text-white">Bats</span>
                 </div>
                 {!isOtpSent ? (
                     <form onSubmit={handleRegister}>
                         {errorMessage && (
-                            <div className="mb-4 text-red-500">
+                            <div className="mb-4 text-yellow-400">
                                 {errorMessage}
                             </div>
                         )}
                         <div className="mb-4">
-                            <label className="block text-gray-700 dark:text-gray-300">Username:</label>
+                            <label className="block text-white">Username:</label>
                             <input
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300"
+                                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700 dark:text-gray-300">Email:</label>
+                            <label className="block text-white">Email:</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300"
+                                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700 dark:text-gray-300">Password:</label>
+                            <label className="block text-white">Password:</label>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={handlePasswordChange}
-                                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300"
+                                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
                             />
                             {isPasswordTouched && (
                                 <div className="mt-2">
-                                    <div className={`text-sm ${passwordValidation.length ? 'text-green-500' : 'text-red-500'}`}>
+                                    <div className={`text-sm ${passwordValidation.length ? 'text-green-400' : 'text-yellow-400'}`}>
                                         {passwordValidation.length ? '✔' : '✘'} At least 8 characters
                                     </div>
-                                    <div className={`text-sm ${passwordValidation.uppercase ? 'text-green-500' : 'text-red-500'}`}>
+                                    <div className={`text-sm ${passwordValidation.uppercase ? 'text-green-400' : 'text-yellow-400'}`}>
                                         {passwordValidation.uppercase ? '✔' : '✘'} At least one uppercase letter
                                     </div>
-                                    <div className={`text-sm ${passwordValidation.number ? 'text-green-500' : 'text-red-500'}`}>
+                                    <div className={`text-sm ${passwordValidation.number ? 'text-green-400' : 'text-yellow-400'}`}>
                                         {passwordValidation.number ? '✔' : '✘'} At least one number
                                     </div>
-                                    <div className={`text-sm ${passwordValidation.specialChar ? 'text-green-500' : 'text-red-500'}`}>
+                                    <div className={`text-sm ${passwordValidation.specialChar ? 'text-green-400' : 'text-yellow-400'}`}>
                                         {passwordValidation.specialChar ? '✔' : '✘'} At least one special character (@$!%*?&)
                                     </div>
                                 </div>
@@ -168,7 +168,7 @@ const Signup: React.FC = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                            className="mt-4 w-full py-2 px-4 bg-white hover:bg-purple-100 text-purple-900 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             disabled={!passwordValidation.length || !passwordValidation.uppercase || !passwordValidation.number || !passwordValidation.specialChar}
                         >
                             Register
@@ -177,12 +177,12 @@ const Signup: React.FC = () => {
                 ) : (
                     <form onSubmit={handleVerifyOtp}>
                         {otpErrorMessage && (
-                            <div className="mb-4 text-red-500">
+                            <div className="mb-4 text-yellow-400">
                                 {otpErrorMessage}
                             </div>
                         )}
                         <div className="mb-4 text-center">
-                            <label className="block text-gray-700 dark:text-gray-300">OTP:</label>
+                            <label className="block text-white">OTP:</label>
                             <div className="flex justify-center space-x-2 mt-2">
                                 {otp.map((value, index) => (
                                     <input
@@ -192,7 +192,7 @@ const Signup: React.FC = () => {
                                         onChange={handleOtpChange(index)}
                                         maxLength={1}
                                         ref={(el) => (otpRefs.current[index] = el)}
-                                        className="w-10 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300 text-center"
+                                        className="w-10 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 text-center"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Backspace' && otp[index] === '') {
                                                 if (index > 0) {
@@ -206,7 +206,7 @@ const Signup: React.FC = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                            className="w-full py-2 px-4 bg-white hover:bg-purple-100 text-purple-900 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                             Confirm OTP
                         </button>

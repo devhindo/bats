@@ -14,7 +14,9 @@ server:
 	@cd server && air
 
 db:
-	docker pull mysql:9.1.0
+	@if [ -z "$$(docker images -q mysql:9.1.0)" ]; then \
+		docker pull mysql:9.1.0; \
+	fi
 
 	@if [ $$(docker ps -aq -f name=mysql-container) ]; then \
 		docker start mysql-container; \

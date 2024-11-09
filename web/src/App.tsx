@@ -51,11 +51,23 @@ function App() {
           </div>
           {isMenuOpen && (
             <div className="mt-4 sm:hidden">
-              <button className="text-white hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md text-sm font-medium flex items-center w-full mb-2">
+              <button
+                className="text-white hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md text-sm font-medium flex items-center w-full mb-2"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate('/signin');
+                }}
+              >
                 <UserIcon className="w-4 h-4 mr-2" />
                 Login
               </button>
-              <button className="text-white hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md text-sm font-medium flex items-center w-full">
+              <button
+                className="text-white hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-md text-sm font-medium flex items-center w-full"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate('/signup');
+                }}
+              >
                 <UserPlusIcon className="w-4 h-4 mr-2" />
                 Sign Up
               </button>

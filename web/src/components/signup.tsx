@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
-import { Moon, User, Mail, Lock, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const url = import.meta.env.VITE_BASE_URL;

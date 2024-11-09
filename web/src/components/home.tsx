@@ -28,7 +28,7 @@ const mockPosts = [
 ]
 
 function HomePage() {
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState<{ id: number; username: string; profilePic: string; content: string; likes: number; comments: { username: string; content: string; }[]; }[]>([])
 
   useEffect(() => {
     // Simulating API call to /home endpoint
@@ -51,7 +51,16 @@ function HomePage() {
   )
 }
 
-function PostCard({ post }) {
+interface Post {
+  id: number;
+  username: string;
+  profilePic: string;
+  content: string;
+  likes: number;
+  comments: { username: string; content: string }[];
+}
+
+function PostCard({ post }: { post: Post }) {
   const [likes, setLikes] = useState(post.likes)
   const [comments, setComments] = useState(post.comments)
   const [newComment, setNewComment] = useState('')
@@ -60,7 +69,7 @@ function PostCard({ post }) {
     setLikes(likes + 1)
   }
 
-  const handleComment = (e) => {
+  const handleComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (newComment.trim()) {
       setComments([...comments, { username: 'current_user', content: newComment }])

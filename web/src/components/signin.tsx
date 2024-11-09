@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Moon, User, Lock, ArrowRight } from 'lucide-react'
+import {  User, Lock, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Signin() {

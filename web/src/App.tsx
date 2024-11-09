@@ -89,9 +89,9 @@ function App() {
             <div className="text-xl sm:text-2xl font-semibold">6 PM - 6 AM</div>
             <MoonIcon className="w-6 h-6 sm:w-8 sm:h-8 text-blue-200" />
           </div>
-          <Link to="/signup" className="bg-white text-purple-900 hover:bg-purple-100 px-6 py-3 rounded-md text-lg font-medium">
+            <Link to="/signup" className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white hover:from-purple-600 hover:via-pink-600 hover:to-red-600 px-8 py-4 rounded-full text-lg font-medium shadow-xl transform transition-transform duration-300 hover:scale-110 hover:rotate-1">
             Join the Night
-          </Link>
+            </Link>
         </div>
       </section>
 
@@ -124,9 +124,9 @@ function App() {
         <div className="container mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6">Ready to embrace the night?</h2>
           <p className="text-lg sm:text-xl mb-8">Join Bats and discover a world that comes alive after dark.</p>
-          <button className="bg-white text-purple-900 hover:bg-purple-100 px-6 py-3 rounded-md text-lg font-medium">
+            <Link to="/signup" className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white hover:from-purple-600 hover:via-pink-600 hover:to-red-600 px-8 py-4 rounded-full text-lg font-medium shadow-xl transform transition-transform duration-300 hover:scale-110 hover:rotate-1">
             Get Started
-          </button>
+            </Link>
         </div>
       </section>
     </div>

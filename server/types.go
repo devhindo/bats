@@ -33,3 +33,8 @@ func (s Set) Contains(value interface{}) bool {
 	return ok
 }
 
+type tmpUser struct {
+	Email string
+	Otp string
+	Token string
+}

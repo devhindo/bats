@@ -18,6 +18,7 @@ func (api *API) runAPI() {
 
 	mux.HandleFunc("/", handleRoot)
 	mux.HandleFunc("POST /signup", api.handleSignUp)
+	mux.HandleFunc("POST /signup/otp", api.handleOTP)
 
 	/*
 	mux.HandleFunc("GET /api/", s.handleAPIBaseRoute)

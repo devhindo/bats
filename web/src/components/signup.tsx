@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import logo from '../assets/bats.png'; // Adjust the path if necessary
 
@@ -8,10 +8,10 @@ const Signup: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [otp, setOtp] = useState('');
+    const [otp, setOtp] = useState(Array(6).fill(''));
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [passwordError, setPasswordError] = useState('');
+    const [otpErrorMessage, setOtpErrorMessage] = useState('');
     const [passwordValidation, setPasswordValidation] = useState({
         length: false,
         uppercase: false,
@@ -19,6 +19,9 @@ const Signup: React.FC = () => {
         specialChar: false,
     });
     const [isPasswordTouched, setIsPasswordTouched] = useState(false);
+    const [showOtpPopup, setShowOtpPopup] = useState(false);
+
+    const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     const validatePassword = (password: string) => {
         const length = password.length >= 8;
@@ -46,18 +49,19 @@ const Signup: React.FC = () => {
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!validatePassword(password)) {
-            setPasswordError('Password must be at least 8 characters long, include an uppercase letter, a number, and a special character.');
             return;
         }
         try {
-            await axios.post(url + 'signup', {
+            const response = await axios.post(url + 'signup', {
                 username,
                 email,
                 password,
             });
-            setIsOtpSent(true);
-            setErrorMessage('');
-            setPasswordError('');
+            if (response.status === 201 && response.data.message === 'otp sent to email') {
+                setIsOtpSent(true);
+                setErrorMessage('');
+                setShowOtpPopup(true);
+            }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 409) {
                 setErrorMessage('Username already exists');
@@ -67,18 +71,41 @@ const Signup: React.FC = () => {
         }
     };
 
+    const handleOtpChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newOtp = [...otp];
+        const value = e.target.value;
+    
+        if (value === '' && (e.nativeEvent as InputEvent).inputType === 'deleteContentBackward') {
+            newOtp[index] = '';
+            setOtp(newOtp);
+            if (index > 0) {
+                otpRefs.current[index - 1]?.focus();
+            }
+        } else if (value.length === 1) {
+            newOtp[index] = value;
+            setOtp(newOtp);
+            if (index < otpRefs.current.length - 1) {
+                otpRefs.current[index + 1]?.focus();
+            }
+        }
+    };
+
     const handleVerifyOtp = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
             const response = await axios.post(url + 'signup/otp', {
                 email,
-                otp,
+                otp: otp.join(''),
             });
             const token = response.data.token;
             localStorage.setItem('token', token);
-            alert('Registration successful');
+            window.location.href = '/home'; // Redirect to /home on successful registration
         } catch (error) {
-            console.error('There was an error verifying OTP!', error);
+            if (axios.isAxiosError(error) && error.response?.status === 401) {
+                setOtpErrorMessage('Incorrect OTP. Please try again.');
+            } else {
+                console.error('There was an error verifying OTP!', error);
+            }
         }
     };
 
@@ -122,11 +149,6 @@ const Signup: React.FC = () => {
                                 onChange={handlePasswordChange}
                                 className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300"
                             />
-                            {passwordError && (
-                                <div className="mt-2 text-red-500">
-                                    {passwordError}
-                                </div>
-                            )}
                             {isPasswordTouched && (
                                 <div className="mt-2">
                                     <div className={`text-sm ${passwordValidation.length ? 'text-green-500' : 'text-red-500'}`}>
@@ -147,30 +169,63 @@ const Signup: React.FC = () => {
                         <button
                             type="submit"
                             className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                            disabled={!passwordValidation.length || !passwordValidation.uppercase || !passwordValidation.number || !passwordValidation.specialChar}
                         >
                             Register
                         </button>
                     </form>
                 ) : (
                     <form onSubmit={handleVerifyOtp}>
-                        <div className="mb-4">
+                        {otpErrorMessage && (
+                            <div className="mb-4 text-red-500">
+                                {otpErrorMessage}
+                            </div>
+                        )}
+                        <div className="mb-4 text-center">
                             <label className="block text-gray-700 dark:text-gray-300">OTP:</label>
-                            <input
-                                type="text"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300"
-                            />
+                            <div className="flex justify-center space-x-2 mt-2">
+                                {otp.map((value, index) => (
+                                    <input
+                                        key={index}
+                                        type="text"
+                                        value={value}
+                                        onChange={handleOtpChange(index)}
+                                        maxLength={1}
+                                        ref={(el) => (otpRefs.current[index] = el)}
+                                        className="w-10 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 text-gray-700 dark:text-gray-300 text-center"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Backspace' && otp[index] === '') {
+                                                if (index > 0) {
+                                                    otpRefs.current[index - 1]?.focus();
+                                                }
+                                            }
+                                        }}
+                                    />
+                                ))}
+                            </div>
                         </div>
                         <button
                             type="submit"
                             className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
                         >
-                            Verify OTP
+                            Confirm OTP
                         </button>
                     </form>
                 )}
             </div>
+            {showOtpPopup && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <p className="text-gray-700 dark:text-gray-300">Mail has been sent with the OTP. Please check your mail.</p>
+                        <button
+                            onClick={() => setShowOtpPopup(false)}
+                            className="mt-4 py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

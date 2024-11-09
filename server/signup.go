@@ -22,8 +22,10 @@ import (
 
 var (
 	jwtSecret = []byte(os.Getenv("JWT_SECRET"))
-	tmpRegisteredUsers = make(Set)
+	tmpRegisteredUsers = map[string]User{}
 )
+
+
 
 func (api *API) handleSignUp(w http.ResponseWriter, r *http.Request) {
 
@@ -70,21 +72,27 @@ func (api *API) handleSignUp(w http.ResponseWriter, r *http.Request) {
 
 	// generate otp 
 	otp := generateRandomString(6)
+	user.Otp = otp
+	log.Println("otp: ", otp)
+	/*
 	err = sendMailResend(user.Email, "Bats: Confirm Registration", "<html><body><p>Your OTP is: <strong>" + otp + "</strong></p><p>Valid for 5 minutes</p></body></html>")
 	if err != nil {
 		log.Println("error: /signup: error in sending mail: err: ", err)
 		http.Error(w, "error in sending mail.", http.StatusInternalServerError)
 		return
 	}
+	*/
 
+	// add user to temporary registered users
+	tmpRegisteredUsers[user.Email] = user
 
 	// send the token back
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"token": tokenString})
+	json.NewEncoder(w).Encode(map[string]string{"message": "otp sent to email"})
 
 
-	log.Println("Handling signup")
+	log.Printf("Handling signup: %+v" , user)
 }
 
 func createJWTToken(c *User) (string, error) {
@@ -106,3 +114,56 @@ func createJWTToken(c *User) (string, error) {
 
 	return tokenString, nil
 } 
+
+func (api *API) handleOTP(w http.ResponseWriter, r *http.Request) {
+	log.Println("Handling otp")
+
+	var res struct {
+		OTP string `json:"otp"`
+		Email string `json:"email"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&res)
+	if err != nil {
+		log.Println("error: /signup/otp: invalid credentails: err: ", err)
+		http.Error(w, "error in otp credentials. " + "error: " + err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// check if user exists in temporary registered users
+
+	user, ok := tmpRegisteredUsers[res.Email]
+	if !ok {
+		log.Println("error: /signup/otp: user not found in temporary registered users")
+		http.Error(w, "user not found in temporary registered users", http.StatusNotFound)
+		return
+	}
+
+	if user.Otp != res.OTP {
+		log.Println("error: /signup/otp: invalid otp" + "invalid otp, entered one is " + res.OTP + " and correct one is " + user.Otp)
+		http.Error(w, "invalid otp, entered", http.StatusUnauthorized)
+		return
+	}
+
+	// add user to database
+	err = nil
+	if err != nil {
+		log.Println("error: /signup/otp: error in adding user to database: err: ", err)
+		http.Error(w, "error in adding user to database. " + "error: " + err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// remove user from temporary registered users
+	delete(tmpRegisteredUsers, res.Email)
+
+	// send the token back
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"message": "user registered successfully", "token": user.JWT})
+
+	log.Printf("Handling otp: %+v" , res)
+
+
+}
+
+

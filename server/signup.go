@@ -82,13 +82,14 @@ func (api *API) handleSignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	*/
+	/*
 	err = sendMailResend(user.Email, "Bats: Confirm Registration", "<html><body><p>Your OTP is: <strong>" + otp + "</strong></p><p>Valid for 5 minutes</p></body></html>")
 	if err != nil {
 		log.Println("error: /signup: error in sending mail: err: ", err)
 		http.Error(w, "error in sending mail.", http.StatusInternalServerError)
 		return
 	}
-
+	*/
 	// add user to temporary registered users
 	tmpRegisteredUsers[user.Email] = user
 

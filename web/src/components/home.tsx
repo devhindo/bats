@@ -1,121 +1,110 @@
-import React, { useState, useEffect } from 'react'
-import { Heart, MessageCircle, Send } from 'lucide-react'
+import { useState } from 'react'
+import { Settings, LogOut, User, HomeIcon, UserCircle } from 'lucide-react'
 
-// Mock data to simulate fetching from /home endpoint
-const mockPosts = [
-  {
-    id: 1,
-    username: 'night_owl_1',
-    profilePic: '/placeholder.svg?height=40&width=40',
-    content: 'Just spotted a beautiful owl outside my window. Night life at its best! 🦉✨',
-    likes: 15,
-    comments: [
-      { username: 'moon_gazer', content: 'Amazing! What species?' },
-      { username: 'insomnia_queen', content: 'Lucky you! I wish I could see owls where I live.' }
-    ]
-  },
-  {
-    id: 2,
-    username: 'midnight_coder',
-    profilePic: '/placeholder.svg?height=40&width=40',
-    content: 'Late night coding session. Who else is burning the midnight oil? 💻☕',
-    likes: 32,
-    comments: [
-      { username: 'caffeine_addict', content: 'Right here with you! What are you working on?' },
-      { username: 'sleepy_dev', content: 'Wish I had your energy. I\'m calling it a night.' }
-    ]
-  }
-]
+export default function Home() {
+  const [isDark, setIsDark] = useState(true)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
-function HomePage() {
-  const [posts, setPosts] = useState<{ id: number; username: string; profilePic: string; content: string; likes: number; comments: { username: string; content: string; }[]; }[]>([])
-
-  useEffect(() => {
-    // Simulating API call to /home endpoint
-    setTimeout(() => {
-      setPosts(mockPosts)
-    }, 1000)
-  }, [])
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-indigo-900 text-white p-4">
-      <header className="text-center mb-8">
-        <h1 className="text-3xl font-bold">Bats Feed</h1>
-      </header>
-      <div className="max-w-2xl mx-auto space-y-6">
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-interface Post {
-  id: number;
-  username: string;
-  profilePic: string;
-  content: string;
-  likes: number;
-  comments: { username: string; content: string }[];
-}
-
-function PostCard({ post }: { post: Post }) {
-  const [likes, setLikes] = useState(post.likes)
-  const [comments, setComments] = useState(post.comments)
-  const [newComment, setNewComment] = useState('')
-
-  const handleLike = () => {
-    setLikes(likes + 1)
-  }
-
-  const handleComment = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (newComment.trim()) {
-      setComments([...comments, { username: 'current_user', content: newComment }])
-      setNewComment('')
-    }
+  const toggleSettings = () => {
+    setIsSettingsOpen(!isSettingsOpen)
   }
 
   return (
-    <div className="bg-purple-800 bg-opacity-50 rounded-lg p-4 shadow-lg">
-      <div className="flex items-center mb-4">
-        <img src={post.profilePic} alt={post.username} className="w-10 h-10 rounded-full mr-3" />
-        <span className="font-semibold">{post.username}</span>
-      </div>
-      <p className="mb-4">{post.content}</p>
-      <div className="flex items-center space-x-4 mb-4">
-        <button onClick={handleLike} className="flex items-center space-x-1 text-pink-400 hover:text-pink-300">
-          <Heart size={20} />
-          <span>{likes}</span>
-        </button>
-        <div className="flex items-center space-x-1 text-blue-400">
-          <MessageCircle size={20} />
-          <span>{comments.length}</span>
-        </div>
-      </div>
-      <div className="space-y-2">
-        {comments.map((comment, index) => (
-          <div key={index} className="bg-purple-700 bg-opacity-50 rounded p-2">
-            <span className="font-semibold mr-2">{comment.username}:</span>
-            {comment.content}
+    <div className={`min-h-screen ${isDark ? 'dark' : ''}`}>
+      <div className="bg-black text-gray-200 text-sm sm:text-base">
+        {/* Main Content */}
+        <main className="pb-16"> {/* Add padding to bottom to account for mobile nav */}
+            <div className="fixed top-4 left-4 z-50">
+            <img src="/bats.svg" alt="Bats Logo" className="w-6 h-6 sm:w-10 sm:h-10" />
+            </div>
+            {/* Settings Button and Dropdown */}
+          <div className="relative">
+            <button
+              onClick={toggleSettings}
+              className="fixed top-4 right-4 z-50 p-1 sm:p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+            >
+              <Settings className="h-4 w-4 sm:h-6 sm:w-6 text-gray-200" />
+            </button>
+            {isSettingsOpen && (
+              <div className="absolute top-14 right-4 w-48 sm:w-56 bg-gray-900 rounded-md shadow-lg z-50">
+                <button
+                  onClick={() => console.log("Profile settings clicked")}
+                  className="w-full text-left px-2 sm:px-4 py-1 sm:py-2 hover:bg-gray-700 flex items-center text-gray-200"
+                >
+                  <User className="mr-1 sm:mr-2 h-3 sm:h-4 w-3 sm:w-4" />
+                  <span>Profile settings</span>
+                </button>
+                <button
+                  onClick={() => console.log("Log out clicked")}
+                  className="w-full text-left px-2 sm:px-4 py-1 sm:py-2 hover:bg-gray-700 flex items-center text-gray-200"
+                >
+                  <LogOut className="mr-1 sm:mr-2 h-3 sm:h-4 w-3 sm:w-4" />
+                  <span>Log out</span>
+                </button>
+              </div>
+            )}
           </div>
-        ))}
+
+          {/* Feed */}
+          <div className="max-w-2xl mx-auto">
+            {/* New Post Input */}
+            <div className="p-2 sm:p-4 border-b border-gray-800">
+              <div className="flex gap-2 sm:gap-4">
+                <UserCircle className="w-6 h-6 sm:w-8 sm:h-8 text-gray-200" />
+                <input
+                  type="text"
+                  placeholder="What's happening?"
+                  className="flex-1 bg-transparent border-none text-sm sm:text-lg focus:outline-none text-gray-200"
+                />
+              </div>
+              <div className="flex justify-end mt-2 sm:mt-4">
+                <button className="px-2 sm:px-4 py-1 sm:py-2 border border-gray-500 text-gray-200 rounded-md hover:bg-gray-700 transition-colors">
+                  Post
+                </button>
+              </div>
+            </div>
+
+            {/* Posts */}
+            {Array.from({ length: 5 }).map((_, i) => (
+              <article key={i} className="p-2 sm:p-4 border-b border-gray-800">
+                <div className="flex gap-2 sm:gap-4">
+                  <UserCircle className="w-6 h-6 sm:w-8 sm:h-8 text-gray-200" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <h3 className="font-semibold text-gray-200 text-xs sm:text-sm sm:text-base">User {i + 1}</h3>
+                      <span className="text-gray-400 text-xs sm:text-sm">@user{i + 1}</span>
+                      <span className="text-gray-400 text-xs sm:text-sm">· 1h</span>
+                    </div>
+                    <p className="mt-1 sm:mt-2 text-gray-200 text-xs sm:text-sm sm:text-base">This is a sample post content. It can be much longer and may include hashtags, mentions, and links.</p>
+                    <div className="mt-2 sm:mt-4 flex gap-2 sm:gap-4 text-gray-400">
+                      <button className="flex items-center gap-1 sm:gap-2 hover:text-gray-200 text-xs sm:text-sm sm:text-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 sm:h-5 sm:w-5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        <span>20</span>
+                      </button>
+                      <button className="flex items-center gap-1 sm:gap-2 hover:text-gray-200 text-xs sm:text-sm sm:text-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 sm:h-5 sm:w-5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <span>10</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </main>
+
+        {/* Mobile Navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800">
+          <div className="flex justify-around p-2 sm:p-4">
+            <a href="#" className="text-gray-200 hover:text-gray-400">
+              <HomeIcon className="h-4 w-4 sm:h-6 sm:w-6" />
+            </a>
+            <a href="#" className="text-gray-200 hover:text-gray-400">
+              <User className="h-4 w-4 sm:h-6 sm:w-6" />
+            </a>
+          </div>
+        </nav>
       </div>
-      <form onSubmit={handleComment} className="mt-4 flex">
-        <input
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Add a comment..."
-          className="flex-grow bg-purple-700 bg-opacity-50 rounded-l p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <button type="submit" className="bg-blue-500 hover:bg-blue-600 rounded-r p-2">
-          <Send size={20} />
-        </button>
-      </form>
     </div>
   )
 }
-
-export default HomePage

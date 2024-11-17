@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Settings, LogOut, User, HomeIcon, UserCircle } from 'lucide-react'
 
 export default function Home() {
-  const [isDark, setIsDark] = useState(true)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   const toggleSettings = () => {
@@ -10,7 +9,7 @@ export default function Home() {
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'dark' : ''}`}>
+    <div className={`min-h-screen dark`}>
       <div className="bg-black text-gray-200 text-sm sm:text-base">
         {/* Main Content */}
         <main className="pb-16"> {/* Add padding to bottom to account for mobile nav */}

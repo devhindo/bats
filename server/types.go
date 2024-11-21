@@ -9,12 +9,22 @@ type User struct {
 }
 
 type Post struct {
-	Author string   // username of the author
-	Content string
+	author string     // username of the author
 	CreatedAt string //TODO: make it a date type compatable with the one in the database
+	Content string
+	Likes int
+	commentsNumber int
+
 }
 
-
+type Comment struct {
+	PostID string
+	CommentID string
+	content string
+	author string
+	CreatedAt string
+	Likes int
+}
 
 // `json:"state"`
 

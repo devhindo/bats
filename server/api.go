@@ -20,7 +20,8 @@ func (api *API) runAPI() {
 	mux.HandleFunc("POST /signup", api.handleSignUp)
 	mux.HandleFunc("POST /signup/otp", api.handleOTP)
 	mux.HandleFunc("POST /home", api.handleHome)
-
+	mux.HandleFunc("POST /signout", api.handleSignOut)
+	mux.Handle("GET /home", JWTAuthMiddleware(http.HandlerFunc(api.handleHome)))
 	/*
 	mux.HandleFunc("GET /api/", s.handleAPIBaseRoute)
 	mux.HandleFunc("/auth/login", s.handleLogin)
@@ -97,4 +98,17 @@ func corsMiddleware(next http.Handler) http.Handler {
 
         next.ServeHTTP(w, r)
     })
+}
+
+func checkTokenMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := r.Header.Get("Authorization")
+		if token == "" {
+			http.Error(w, "No token provided", http.StatusUnauthorized)
+			log.Println("No token provided")
+			return
+		} 
+		log.Println("Middleware Token: ", token)
+		next.ServeHTTP(w, r)
+	})
 }

@@ -12,9 +12,11 @@ user endpoints
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -164,13 +166,89 @@ func (api *API) handleOTP(w http.ResponseWriter, r *http.Request) {
 	delete(tmpRegisteredUsers, res.Email)
 
 	// send the token back
+
+	http.SetCookie(w, &http.Cookie{
+		Name: "token",
+		Value: user.JWT,
+		HttpOnly: true,
+		Secure: true,
+		SameSite: http.SameSiteNoneMode,
+		//Expires: time.Now().Add(time.Hour),
+	})
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"message": "user registered successfully", "token": user.JWT})
+	json.NewEncoder(w).Encode(map[string]string{"message": "user registered successfully"})
 
 	log.Printf("Handling otp: %+v" , res)
 
 
 }
 
+// Function to verify JWT tokens
+func verifyToken(tokenString string) (*jwt.Token, error) {
+	// Parse the token with the secret key
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return jwtSecret, nil
+	})
 
+	// Check for verification errors
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if the token is valid
+	if !token.Valid {
+		return nil, fmt.Errorf("invalid token")
+	}
+
+	// Return the verified token
+	return token, nil
+}
+
+func JWTAuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		log.Println("authHeader: ", authHeader)	
+
+	if authHeader == "" {
+		log.Println("error: /signup: no authorization header")
+		http.Error(w, "no authorization header", http.StatusUnauthorized)
+		return
+	}
+
+	// Check if the authorization header is in the correct format
+	tokenString := strings.Split(authHeader, "Bearer ")[1]
+
+	token, err := verifyToken(tokenString)
+	if err != nil {
+		log.Println("error: /signup: error in verifying token: err: ", err)
+		http.Error(w, "error in verifying token. " + "error: " + err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	// Check if the token is valid
+	if !token.Valid {
+		log.Println("error: /signup: invalid token")
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+		return
+	}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (api *API) handleSignOut(w http.ResponseWriter, r *http.Request) {
+	log.Println("Handling signout")
+
+	http.SetCookie(w, &http.Cookie{
+		Name: "token",
+		Value: "",
+		HttpOnly: true,
+		Path: "/",
+		MaxAge: -1,
+	})
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("signed out successfully"))
+}

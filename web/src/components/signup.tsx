@@ -98,8 +98,6 @@ const Signup: React.FC = () => {
                 email,
                 otp: otp.join(''),
             });
-            const token = response.data.token;
-            localStorage.setItem('token', token);
             window.location.href = '/home'; // Redirect to /home on successful registration
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 401) {

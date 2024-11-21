@@ -1,12 +1,47 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Settings, LogOut, User, HomeIcon, UserCircle } from 'lucide-react'
+import axios from 'axios'
+
+interface Comment {
+  author: string;
+  createdAt: string;
+  content: string;
+  likes: number;
+}
+
+interface Post {
+  username: string;
+  createdAt: string;
+  content: string;
+  likes: number;
+  commentsNumber: number;
+  comments: Comment[];
+}
 
 export default function Home() {
+  const url = import.meta.env.VITE_BASE_URL;
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen)
   }
+
+  const [posts, setPosts] = useState<Post[]>([])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(url + '/home', { withCredentials: true })
+        setPosts(response.data)
+      } catch (error) {
+        console.error('Error fetching posts:', error)
+      }
+    }
+
+    fetchPosts()
+  }, [url]) // Add url as a dependency
+
+  console.log(posts)
 
   return (
     <div className={`min-h-screen dark`}>
@@ -34,7 +69,11 @@ export default function Home() {
                   <span>Profile settings</span>
                 </button>
                 <button
-                  onClick={() => console.log("Log out clicked")}
+                  onClick={
+                    () => {console.log("Log out clicked")
+                    localStorage.removeItem('token')
+                    window.location.href = '/'
+                    }}
                   className="w-full text-left px-2 sm:px-4 py-1 sm:py-2 hover:bg-gray-700 flex items-center text-gray-200"
                 >
                   <LogOut className="mr-1 sm:mr-2 h-3 sm:h-4 w-3 sm:w-4" />

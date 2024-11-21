@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Settings, LogOut, User, HomeIcon, UserCircle } from 'lucide-react'
 import axios from 'axios'
+import useAuth from './verifyAuth'
 
 interface Comment {
   author: string;
@@ -21,6 +22,18 @@ interface Post {
 export default function Home() {
   const url = import.meta.env.VITE_BASE_URL;
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const isLoggedIn = useAuth();
+  return (
+    <div>
+        {isLoggedIn ? (
+            <p>User is logged in</p>
+        ) : (
+            <p>User is not logged in</p>
+        )}
+    </div>
+  );
 
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen)
@@ -31,15 +44,67 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(url + '/home', { withCredentials: true })
-        setPosts(response.data)
+        const response = await axios.get(url + 'home', { withCredentials: true })
+        console.log(response.status)
+        if (response.status === 200) {
+          setPosts(response.data)
+          console.log("dtaaaaaa")
+        } else {
+          console.log("stttstxt" + response.statusText)
+          setError('Error fetching posts: ' + response.statusText)
+        }
       } catch (error) {
         console.error('Error fetching posts:', error)
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            setError('Server is offline. Please try again later.')
+          } else if (error.response.status === 401) {
+            setError('You are not authenticated. Please log in.')
+          } else {
+            setError('Error fetching posts: ' + error.message)
+          }
+        } else {
+          setError('An unexpected error occurred: ' + (error as Error).message)
+        }
       }
     }
 
     fetchPosts()
   }, [url]) // Add url as a dependency
+
+  if (error) {
+    if (error === 'You are not authenticated. Please log in.') {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-black text-gray-200">
+          <div className="text-center">
+            <p>{error}</p>
+            <button
+              onClick={() => window.location.href = '/signin'}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              Go to Sign In
+            </button>
+          </div>
+        </div>
+      )
+    } else if (error === 'Server is offline. Please try again later.') {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-black text-gray-200">
+          <div className="text-center">
+            <p>{error}</p>
+          </div>
+        </div>
+      )
+    } else {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-black text-gray-200">
+          <div className="text-center">
+            <p>{error}</p>
+          </div>
+        </div>
+      )
+    }
+  }
 
   console.log(posts)
 

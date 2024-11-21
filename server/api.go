@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type API struct {
@@ -15,12 +16,14 @@ type API struct {
 func (api *API) runAPI() {
 
 	mux := http.NewServeMux()
-
+	
 	mux.HandleFunc("/", handleRoot)
 	mux.HandleFunc("POST /signup", api.handleSignUp)
 	mux.HandleFunc("POST /signup/otp", api.handleOTP)
 	mux.HandleFunc("POST /home", api.handleHome)
-	mux.HandleFunc("POST /signout", api.handleSignOut)
+	mux.HandleFunc("/usr/verify", api.verifyUser)
+	
+	mux.Handle("POST /signout", JWTAuthMiddleware(http.HandlerFunc(api.handleSignOut)))
 	mux.Handle("GET /home", JWTAuthMiddleware(http.HandlerFunc(api.handleHome)))
 	/*
 	mux.HandleFunc("GET /api/", s.handleAPIBaseRoute)
@@ -28,9 +31,9 @@ func (api *API) runAPI() {
 	mux.HandleFunc("/auth/refresh", s.handleRefreshToken)
 	
 	*/
-
+	
 	handler := corsMiddleware(mux)
-
+	
 	port := ":8080"
 	log.Println("Server is running on port" + port)
 	err := http.ListenAndServe(port, handler)
@@ -86,11 +89,12 @@ func handleAPIBaseRoute(w http.ResponseWriter, r *http.Request) {
 
 func corsMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+		
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+        w.Header().Set("Access-Control-Allow-Credentials", "true")
         w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
         w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-        // Handle preflight requests
         if r.Method == http.MethodOptions {
             w.WriteHeader(http.StatusOK)
             return
@@ -111,4 +115,76 @@ func checkTokenMiddleware(next http.Handler) http.Handler {
 		log.Println("Middleware Token: ", token)
 		next.ServeHTTP(w, r)
 	})
+}
+
+func JWTAuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+        w.Header().Set("Access-Control-Allow-Credentials", "true")
+        w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		authHeader := r.Header.Get("Authorization")
+		log.Println("authHeader: ", authHeader)	
+		
+		c, err := r.Cookie("jwt_token")
+		if err != nil {
+			log.Println("error printing cookie jwt")
+		}
+		log.Println("a7oooooooooo ", c )
+
+		if authHeader == "" {
+			log.Println("error: /signup: no authorization header")
+			http.Error(w, "no authorization header", http.StatusUnauthorized)
+			return
+		}
+
+		// Check if the authorization header is in the correct format
+		tokenString := strings.Split(authHeader, "Bearer ")[1]
+
+		token, err := verifyToken(tokenString)
+		if err != nil {
+			log.Println("error: /signup: error in verifying token: err: ", err)
+			http.Error(w, "error in verifying token. " + "error: " + err.Error(), http.StatusUnauthorized)
+			return
+		}
+
+		// Check if the token is valid
+		if !token.Valid {
+			log.Println("error: /signup: invalid token")
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (api *API) verifyUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	cookie, err := r.Cookie("jwt_token")
+	if err != nil {
+		log.Println("user is not authorizedddddd")
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	log.Println("cookie: ", cookie)
+
+	tokenString := cookie.Value
+    token, err := verifyToken(tokenString)
+    if err != nil || !token.Valid {
+        http.Error(w, "Unauthorized", http.StatusUnauthorized)
+        return
+    } else {
+		log.Println("fix token authintication")
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(map[string]string{"message": "authenticated"})
 }

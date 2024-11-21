@@ -57,6 +57,8 @@ const Signup: React.FC = () => {
                 username,
                 email,
                 password,
+            }, {
+                withCredentials: true
             });
             if (response.status === 201 && response.data.message === 'otp sent to email') {
                 setIsOtpSent(true);
@@ -97,6 +99,8 @@ const Signup: React.FC = () => {
             const response = await axios.post(url + 'signup/otp', {
                 email,
                 otp: otp.join(''),
+            }, {
+                withCredentials: true
             });
             window.location.href = '/home'; // Redirect to /home on successful registration
         } catch (error) {

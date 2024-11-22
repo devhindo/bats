@@ -176,7 +176,9 @@ func (api *API) handleOTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// add user to database
-	err = nil
+	
+	err = addUserToDB(api.db, &user)
+
 	if err != nil {
 		log.Println("error: /signup/otp: error in adding user to database: err: ", err)
 		http.Error(w, "error in adding user to database. " + "error: " + err.Error(), http.StatusInternalServerError)
@@ -244,4 +246,12 @@ func (api *API) handleSignOut(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusOK)
     json.NewEncoder(w).Encode(map[string]string{"message": "signed out successfully"})
+}
+
+func addUserToDB(db *DB, u *User) error {
+	err := db.addRecord("users", []string{"username", "email", "password"}, []string{u.Username, u.Email, u.Password})
+	if err != nil {
+		return fmt.Errorf("error in adding user to database: %w", err)
+	}
+	return nil
 }

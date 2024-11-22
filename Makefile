@@ -1,6 +1,7 @@
 .PHONY: ui
 .PHONY: server
 .PHONY: db
+.PHONY: logdb
 
 ui:
 	@cd web && bun run dev -- --open
@@ -24,3 +25,6 @@ db:
 	else \
         docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bats -p 3306:3306 -v ~/t/bats_db:/var/lib/mysql -d mysql:9.1.0; \
 	fi
+
+logdb:
+	@docker exec -it mysql-container mysql -uroot -proot bats

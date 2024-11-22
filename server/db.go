@@ -52,6 +52,7 @@ func (db *DB) createTables() {
 	
 	_, _ = dot.Exec(db.conn, "users")
 	_, _ = dot.Exec(db.conn, "addtestusers")
+	_, _ = dot.Exec(db.conn, "posts")
 
 	log.Println("db: tables created")
 }
@@ -64,4 +65,13 @@ func (db *DB) checkExsistance(table string, column string, value string) (bool, 
 		return false, fmt.Errorf("error: db: error in querying user: err: %v", err)
 	}	
 	return count > 0, nil
+}
+
+func (db *DB) addRecord(tablename string, columns []string, values []string) error {
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", tablename, columns, values)
+	_, err := db.conn.Exec(query)
+	if err != nil {
+		return fmt.Errorf("error: db: error in inserting record: err: %v", err)
+	}
+	return nil
 }

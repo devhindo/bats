@@ -160,6 +160,14 @@ func (api *API) handleOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var tmpUser User
+	tmpUser = User{
+		Email: res.Email,
+		Username: "tmp",
+		Password: "tmp",
+	}
+	
+	err = addUserToDB(api.db, &tmpUser) // remove later
 	// check if user exists in temporary registered users
 
 	user, ok := tmpRegisteredUsers[res.Email]
@@ -177,7 +185,7 @@ func (api *API) handleOTP(w http.ResponseWriter, r *http.Request) {
 
 	// add user to database
 	
-	err = addUserToDB(api.db, &user)
+	//err = addUserToDB(api.db, &user)
 
 	if err != nil {
 		log.Println("error: /signup/otp: error in adding user to database: err: ", err)

@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-
+	"strings"
+	
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/qustavo/dotsql"
 )
@@ -68,10 +69,13 @@ func (db *DB) checkExsistance(table string, column string, value string) (bool, 
 }
 
 func (db *DB) addRecord(tablename string, columns []string, values []string) error {
-	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", tablename, columns, values)
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", tablename, strings.Join(columns, ", "), "'"+strings.Join(values, "', '")+"'")
+	log.Println(query)
 	_, err := db.conn.Exec(query)
 	if err != nil {
 		return fmt.Errorf("error: db: error in inserting record: err: %v", err)
 	}
+
+
 	return nil
 }

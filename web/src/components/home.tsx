@@ -23,7 +23,7 @@ export default function Home() {
   const url = import.meta.env.VITE_BASE_URL;
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
+/*
   const isLoggedIn = useAuth();
   return (
     <div>
@@ -34,7 +34,7 @@ export default function Home() {
         )}
     </div>
   );
-
+*/
   const toggleSettings = () => {
     setIsSettingsOpen(!isSettingsOpen)
   }

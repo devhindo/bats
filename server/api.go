@@ -125,31 +125,31 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
         w.Header().Set("Access-Control-Allow-Credentials", "true")
         w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 		authHeader := r.Header.Get("Authorization")
-		log.Println("authHeader: ", authHeader)	
+		var tokenString string
 		
-		c, err := r.Cookie("jwt_token")
-		if err != nil {
-			log.Println("error printing cookie jwt")
-		}
-		log.Println("a7oooooooooo ", c )
-
-		if authHeader == "" {
-			log.Println("error: /signup: no authorization header")
-			http.Error(w, "no authorization header", http.StatusUnauthorized)
-			return
-		}
-
+		
+		if authHeader != "" {
+			log.Println("authHeader: ", authHeader)	
+			tokenString = strings.Split(authHeader, "Bearer ")[1]
+		} else {
+			c, err := r.Cookie("jwt_token")
+			if err != nil {
+                log.Println("error: no authorization header or jwt cookie")
+                http.Error(w, "no authorization header or jwt cookie", http.StatusUnauthorized)
+                return
+			}
+			tokenString = c.Value
+		}				
 		// Check if the authorization header is in the correct format
-		tokenString := strings.Split(authHeader, "Bearer ")[1]
 
 		token, err := verifyToken(tokenString)
 		if err != nil {
-			log.Println("error: /signup: error in verifying token: err: ", err)
+			logger.Println("error: /signup: error in verifying token: err: ", err)
 			http.Error(w, "error in verifying token. " + "error: " + err.Error(), http.StatusUnauthorized)
 			return
 		}
-
 		// Check if the token is valid
 		if !token.Valid {
 			log.Println("error: /signup: invalid token")
@@ -193,6 +193,7 @@ func (api *API) verifyUser(w http.ResponseWriter, r *http.Request) {
 
 	username, ok := claims["sub"].(string)
 	log.Println("username: ", username)
+
 
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusOK)

@@ -213,7 +213,6 @@ func verifyToken(tokenString string) (*jwt.Token, error) {
 		return jwtSecret, nil
 	})
 
-	log.Println("tokennnn: ", token)
 
 	// Check for verification errors
 	if err != nil {

@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type API struct {
@@ -171,18 +173,26 @@ func (api *API) verifyUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("cookie: ", cookie)
+	//log.Println("cookie: ", cookie)
 
 	tokenString := cookie.Value
     token, err := verifyToken(tokenString)
+	log.Println(err)
     if err != nil || !token.Valid {
         http.Error(w, "Unauthorized", http.StatusUnauthorized)
         return
-    } else {
-		log.Println("fix token authintication")
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+    } 
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+
+	log.Println("claims: ", claims)
+
+	username, ok := claims["sub"].(string)
+	log.Println("username: ", username)
 
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusOK)

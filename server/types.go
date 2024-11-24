@@ -5,6 +5,7 @@ type User struct {
 	Email string `json:"email"`
 	Password string `json:"password"` 
 	JWT string `json:"jwt"`
+	Country string `json:"country"`
 	Otp string `json:"otp"`
 }
 

@@ -213,6 +213,7 @@ func (api *API) handleOTP(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "user registered successfully"})
 
 	log.Printf("Handling otp: %+v" , res)
+	logger.Println("user's ip address: ", r.RemoteAddr)
 
 
 }

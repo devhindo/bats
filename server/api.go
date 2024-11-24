@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"net"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -45,8 +46,9 @@ func (api *API) runAPI() {
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-	log.Println("Handling root")
-	io.WriteString(w, "Hello Bats!")
+	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	logger.Println("Handling root", "user ip: ", ip)
+	io.WriteString(w, "Hello Bat " + r.RemoteAddr + "!")
 }
 
 func  handleBase(w http.ResponseWriter, r *http.Request) {
